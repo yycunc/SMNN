@@ -20,7 +20,7 @@ opts_chunk$set(echo = TRUE)
 # Brief introduction
 
 The current implementation of SMNN encompasses two major steps: one optional clustering step and the other batch effect correction step. In the first step, SMNN takes the expression matrix as input, and performs clustering using Seurat v. 3.0 (Butler *et al.*, 2018). Corresponding clusters/cell types are then matched across batches based on marker genes specified by the user. This entire clustering step can be by-passed by feeding SMNN cell cluster labels. With cell cluster label information, SMNN searches mutual nearest neighbors within each cell type, and performs batch effect correction using SMNN function.  
-  In this tutorial, we will perform batch effect correction using our SMNN package on a toy example of two batches. The first batch contains 400 cells from three cell types, namely fibroblasts, macrophages and endothelial cells. And the second batches has 500 cells from the same three cell types. Both two batches contain expression information of the same 3000 genes.
+In this tutorial, we will perform batch effect correction using our SMNN package on a toy example of two batches. The first batch contains 400 cells from three cell types, namely fibroblasts, macrophages and endothelial cells. And the second batches has 500 cells from the same three cell types. Both two batches contain expression information of the same 3000 genes.
 
 ***
 
