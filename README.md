@@ -23,7 +23,7 @@ In this tutorial, we will perform batch effect correction using SMNN in a toy ex
 
 ## Installation
 
-SMNN package can be directly installed from github with:
+SMNN package can be directly installed from GitHub with:
 ```{r installation}
 install.packages("devtools")
 
