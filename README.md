@@ -3,7 +3,7 @@
 
 Batch effect correction has been recognized to be indispensable when integrating scRNA-seq data from multiple batches. A recent study proposed an effective batch effect correction method based on mutual nearest neighbors (MNN) across batches (Haghverdi *et al.*, 2018). However, the original MNN method is unsupervised in that it ignores cluster label information of single cells, which can further improve effectiveness of batch effect correction, particularly under realistic scenarios where true biological differences are not orthogonal to batch effect. 
 
-Thus, we propose SMNN for batch effect correction of scRNA-seq data via supervised mutual nearest neighbor detection. SMNN either takes cluster/cell-type label information as input or infers cell types using scRNA-seq clustering. It then detects mutual nearest neighbors within matched cell types and corrects batch effect accordingly. Compared to MNN, SMNN provides improved merging within the corresponding cell types across batches, and retains more cell type specific features after correction. 
+Thus, we propose SMNN for batch effect correction of scRNA-seq data via supervised mutual nearest neighbor detection. SMNN either takes cluster/cell-type label information as input or infers cell types using scRNA-seq clustering. It then detects mutual nearest neighbors within matched cell types and corrects batch effect accordingly. Compared to MNN, SMNN provides improved merging within the corresponding cell types across batches, and retains more cell type specific features after correction, especially under realistic scenarios where different batches differ in many aspects including samples used, single cell capture technology employed, or library preparation approach adopted.
 
 SMNN is maintained by Yuchen Yang [yyuchen@email.unc.edu] and Gang Li [franklee@live.unc.edu].
 
@@ -16,14 +16,14 @@ May 23, 2019
 
 ## Brief introduction
 
-The current implementation of SMNN encompasses two major steps: one optional clustering step and the other batch effect correction step. In the first step, SMNN takes the expression matrix as input, and performs clustering using Seurat v. 3.0 (Butler *et al.*, 2018). Corresponding clusters/cell types are then matched across batches based on marker genes specified by the user. This entire clustering step can be by-passed by feeding SMNN cell cluster labels. With cell cluster label information, SMNN searches mutual nearest neighbors within each cell type, and performs batch effect correction using SMNN function.
+The current implementation of SMNN encompasses two major steps: one optional clustering step and the other batch effect correction step. In the first step, SMNN takes the expression matrix as input, and performs clustering using Seurat v. 3.0 (Butler *et al.*, 2018). Corresponding clusters/cell types are then matched across batches based on marker genes specified by the user. This entire clustering step can be by-passed by feeding SMNN cell cluster labels. With cell cluster label information, SMNN searches mutual nearest neighbors within each cell type, and performs batch effect correction using the *SMNNcorrect* function.
 
-In this tutorial, we will perform batch effect correction using our SMNN package on a toy example of two batches. The first batch contains 400 cells from three cell types, namely fibroblasts, macrophages and endothelial cells. And the second batches has 500 cells from the same three cell types. Both two batches contain expression information of the same 3000 genes.
+In this tutorial, we will perform batch effect correction using SMNN in a toy example containing two batches. The first batch contains 400 cells from three cell types, namely fibroblasts, macrophages and endothelial cells. And the second batches has 500 cells from the same three cell types. Both two batches contain 3000 genes.
 
 
 ## Installation
 
-SMNN package can be installed from github with:
+SMNN package can be directly installed from github with:
 ```{r installation}
 install.packages("devtools")
 
@@ -38,6 +38,8 @@ library("SMNN")
 
 
 ## Load the input expression matrix
+
+Once installed, one can use the following command lines to load the data used in our toy example using the following command lines: 
 ```{r set up for input expression data}
 data("data_SMNN")
 dim(data_SMNN$batch1.mat)
