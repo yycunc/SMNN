@@ -33,6 +33,6 @@ library(reticulate)
 use_python("/nas/longleaf/apps/python/3.5.1/bin/python3")
 
 # Perform batch effect correction using SMNNcorrect
-corrected.results <- SMNNcorrect(data_SMNN$batch1.mat, data_SMNN$batch2.mat, batch1.cluster.labels = matched_clusters[[1]], batch2.cluster.labels = matched_clusters[[2]], num.defined.clusters = 3, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE)
+corrected.results <- SMNNcorrect(data_SMNN$batch1.mat, data_SMNN$batch2.mat, batch.cluster.labels = matched_clusters, num.defined.clusters = 3, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE)
 }
 \keyword{datasets}
