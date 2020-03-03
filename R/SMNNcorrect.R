@@ -49,13 +49,18 @@
 #' @import reticulate
 #' @importFrom S4Vectors DataFrame Rle
 #' @export
-SMNNcorrect <- function(..., batch1.cluster.labels, batch2.cluster.labels, num.defined.clusters=1, correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.row=NULL, order=NULL, n.jobs=NULL){
+SMNNcorrect <- function(..., batch.cluster.labels, um.defined.clusters=1, correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.row=NULL, order=NULL, n.jobs=NULL){
     batches <- list(...) 
     nbatches <- length(batches) 
     if (nbatches < 2L) { 
         stop("at least two batches must be specified") 
     }
 
+    ncluster.labels <- length(batch.cluster.labels)
+    if (ncluster.labels != nbatches) { 
+        stop("The number of cluster labels specified must be equal to the number of batches") 
+    }
+    
     batches.t <- list()
     for (i in 1:nbatches){
         batches.t[[i]] <- t(batches[[i]])
@@ -111,12 +116,12 @@ SMNNcorrect <- function(..., batch1.cluster.labels, batch2.cluster.labels, num.d
         
         for(c in 1:num.defined.clusters){
           sets1 <- NULL          
-          ref.batch.rank <- which(batch1.cluster.labels == c)
-          other.batch.rank <- which(batch2.cluster.labels == c)
+          ref.batch.rank <- which(batch.cluster.labels[[1]] == c)
+          other.batch.rank <- which(batch.cluster.labels[[target]] == c)
 
           ### MNNs for each subset. The index is python format (starting from 0 ..)
           print(paste0("Finding the mutual nearest neighbors for cell type ", c, " ..."))
-          sets1 <- mnnpy$utils$find_mutual_nn(data1=ref.batch.in[which(batch1.cluster.labels == c),], data2=other.batch.in[which(batch2.cluster.labels == c),], k1=k, k2=k, n_jobs=n.jobs)
+          sets1 <- mnnpy$utils$find_mutual_nn(data1=ref.batch.in[which(batch.cluster.labels[[1]] == c),], data2=other.batch.in[which(batch.cluster.labels[[target]] == c),], k1=k, k2=k, n_jobs=n.jobs)
           
           s1.trace_back <- integer()
           for(i in 1:length(unlist(sets1[[1]]))){
@@ -134,9 +139,9 @@ SMNNcorrect <- function(..., batch1.cluster.labels, batch2.cluster.labels, num.d
         if(correct.others == TRUE){
           sets1 <- NULL
           
-          ref.batch.rank <- which(batch1.cluster.labels == 0)
-          other.batch.rank <- which(batch2.cluster.labels == 0)
-          sets1 <- mnnpy$utils$find_mutual_nn(data1=ref.batch.in[which(batch1.cluster.labels == 0),], data2=other.batch.in[which(batch2.cluster.labels == 0),], k1=k, k2=k, n_jobs=n.jobs)
+          ref.batch.rank <- which(batch.cluster.labels[[1]] == 0)
+          other.batch.rank <- which(batch.cluster.labels[[target]] == 0)
+          sets1 <- mnnpy$utils$find_mutual_nn(data1=ref.batch.in[which(batch.cluster.labels[[1]] == 0),], data2=other.batch.in[which(batch.cluster.labels[[target]] == 0),], k1=k, k2=k, n_jobs=n.jobs)
   
           s1.trace_back <- integer()
           for(i in 1:length(unlist(sets1[[1]]))){
