@@ -6,11 +6,10 @@
 #' @description This function SMNNcorrect is designed to perform supervised batch effect correction for scRNA-seq data by first identifying nearest neighbors (NNs) within corresponding clusters (or cell types) and then leveraging information from these NNs.
 #' It takes as input raw expression matrices from two or more batches and a list of the unified cluster labels (output from unifiedClusterLabelling).
 #' It outputs batch-corrected expression matrix for each batch.
-#' @usage SMNNcorrect(..., batch1.cluster.labels, batch2.cluster.labels, num.defined.clusters=1, correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.row=NULL, order=NULL, n.jobs=NULL)
+#' @usage SMNNcorrect(..., batch.cluster.labels, num.defined.clusters=1, correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.row=NULL, order=NULL, n.jobs=NULL)
 #' @param ... Two or more expression matrices each corresponding to one batch, where each row corresponds to a gene, and each colname correspond to a cell. 
 #' The number and order of rows should be identical across all maxtices (i.e., all batches should have the exact same gene set and in the same order).
-#' @param batch1.cluster.labels is a vector specifying the cluster labels of each cell from batch1. Cells not belonging to any clusters should be set to 0.
-#' @param batch2.cluster.labels is a vector specifying the cluster labels of each cell from batch2. Similarly, cells not belonging to any clusters should be set to 0.
+#' @param batch.cluster.labels is a list of vectors specifying the cluster labels of each cell from each batch. Cells not belonging to any clusters should be set to 0.
 #' @param num.defined.clusters specifies the number of clusters matched between two or more batches. Default is 1.
 #' @param correct.others is a Boolean variable that defines whether to search nearest neighbors among the cells not belonging to any clusters. Default is FALSE, that is, cells not belonging to any clusters will not be considered as candidate nearest neighbors. 
 #' @param k defines the maximum number of nearest neighbors to be identified. Default is 20.
@@ -45,7 +44,7 @@
 #' use_python("/nas/longleaf/apps/python/3.5.1/bin/python3")
 #'
 #' # Perform batch effect correction using SMNNcorrect
-#' corrected.results <- SMNNcorrect(data_SMNN$batch1.mat, data_SMNN$batch2.mat, batch1.cluster.labels = matched_clusters[[1]], batch2.cluster.labels = matched_clusters[[2]], num.defined.clusters = 3, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE)
+#' corrected.results <- SMNNcorrect(data_SMNN$batch1.mat, data_SMNN$batch2.mat, batch.cluster.labels = matched_clusters, num.defined.clusters = 3, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE)
 #' @import reticulate
 #' @importFrom S4Vectors DataFrame Rle
 #' @export
