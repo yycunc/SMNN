@@ -56,6 +56,8 @@ SMNNcorrect <- function(..., batch.cluster.labels, um.defined.clusters=1, correc
     }
 
     ncluster.labels <- length(batch.cluster.labels)
+    print (ncluster.labels)
+    print (nbatches)
     if (ncluster.labels != nbatches) { 
         stop("The number of cluster labels specified must be equal to the number of batches") 
     }
