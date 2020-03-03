@@ -48,7 +48,7 @@
 #' @import reticulate
 #' @importFrom S4Vectors DataFrame Rle
 #' @export
-SMNNcorrect <- function(batches, batch.cluster.labels = NULL, um.defined.clusters=1, correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.row=NULL, order=NULL, n.jobs=NULL){
+SMNNcorrect <- function(batches, batch.cluster.labels, num.defined.clusters=1, correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.row=NULL, order=NULL, n.jobs=NULL){
     #batches <- list(...) 
     nbatches <- length(batches) 
     if (nbatches < 2L) { 
