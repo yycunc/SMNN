@@ -95,7 +95,7 @@ use_python("/nas/longleaf/apps/python/3.5.1/bin/python3")
 With harmonized cluster label information for single cells across batches, we perform batch effect correction. Specifically, we apply cosine normalization on both input and output data and set the number of mutual nearest neighbors at 20.
 
 ```{r perform batch effect correction using SMNNcorrect}
-corrected.results <- SMNNcorrect(data_SMNN$batch1.mat, data_SMNN$batch2.mat, batch1.cluster.labels = matched_clusters[[1]], batch2.cluster.labels = matched_clusters[[2]], num.defined.clusters = 3, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE)
+corrected.results <- SMNNcorrect(data_SMNN$batch1.mat, data_SMNN$batch2.mat, batch.cluster.labels = matched_clusters, num.defined.clusters = 3, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE)
 ```
 
 *SMNNcorrect* function will output the following information: (1) the batch-corrected expression matrix for each batch; and (2) information regarding mutual nearest neighbors.
