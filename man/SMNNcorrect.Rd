@@ -9,11 +9,11 @@ It takes as input raw expression matrices from two or more batches and a list of
 It outputs batch-corrected expression matrix for each batch.
 }
 \usage{
-SMNNcorrect(..., batch1.cluster.labels, batch2.cluster.labels, num.defined.clusters=1, correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.row=NULL, order=NULL, n.jobs=NULL)
+SMNNcorrect(batches, batch.cluster.labels, num.defined.clusters=1, correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.row=NULL, order=NULL, n.jobs=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{...}{Two or more expression matrices each corresponding to one batch, where each row corresponds to a gene, and each colname correspond to a cell. 
+  \item{batches}{is a list of two or more expression matrices each corresponding to one batch, where each row corresponds to a gene, and each colname correspond to a cell. 
 The number and order of rows should be identical across all maxtices (i.e., all batches should have the exact same gene set and in the same order).}
 
   \item{batch.cluster.labels}{is a list of vectors specifying the cluster labels of each cell from each batch. Cells not belonging to any clusters should be set to 0.}
@@ -72,7 +72,7 @@ library(reticulate)
 use_python("/nas/longleaf/apps/python/3.5.1/bin/python3")
 
 # Perform batch effect correction using SMNNcorrect
-corrected.results <- SMNNcorrect(data_SMNN$batch1.mat, data_SMNN$batch2.mat, batch.cluster.labels = matched_clusters, num.defined.clusters = 3, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE)
+corrected.results <- SMNNcorrect(batches = list(data_SMNN$batch1.mat, data_SMNN$batch2.mat), batch.cluster.labels = matched_clusters, num.defined.clusters = 3, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
