@@ -8,6 +8,10 @@ According to the benchmarking results, SMNN provides improved merging within the
 SMNN is maintained by Yuchen Yang [yyuchen@email.unc.edu] and Gang Li [franklee@live.unc.edu].
 
 ## News and Updates
+March 4, 2020
+* Version 1.0.0 released
+  + Fixing the issue for multiple-batch correction
+
 May 23, 2019
 * Version 0.99.0 released
   + First offical release
