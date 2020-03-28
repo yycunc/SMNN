@@ -8,6 +8,10 @@ According to the benchmarking results, SMNN provides improved merging within the
 SMNN is maintained by Yuchen Yang [yyuchen@email.unc.edu] and Gang Li [franklee@live.unc.edu].
 
 ## News and Updates
+March 28, 2020
+* Version 1.1.0 released
+  + Allowing correction without any prior specified cluster labels
+
 March 4, 2020
 * Version 1.0.0 released
   + Fixing the issue for multiple-batch correction
