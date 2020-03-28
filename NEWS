@@ -1,5 +1,8 @@
 SMNNcorrect News
 
+SMNNcorrect 1.1.0 (Release date: 2020-03-28):
+  * Allowing correction without any prior specified cluster labels
+
 SMNNcorrect 1.0.0 (Release date: 2020-03-04):
   * Fixing the issue for multiple-batch correction
 
