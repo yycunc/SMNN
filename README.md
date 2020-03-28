@@ -1,7 +1,9 @@
 # SMNN
 ### SMNN: Batch Effect Correction for Single-cell RNA-seq data via Supervised Mutual Nearest Neighbor Detection
 
-Batch effect correction has been recognized to be indispensable when integrating scRNA-seq data from multiple batches. Here, we propose SMNN for batch effect correction of scRNA-seq data via supervised mutual nearest neighbor detection. Specifically, SMNN either takes cluster/cell-type label information as input or infers cell types using scRNA-seq clustering, and it then detects mutual nearest neighbors within matched cell types and corrects batch effect accordingly. According to the benchmarking results, SMNN provides improved merging within the corresponding cell types across batches, and retains more cell type specific features after correction, especially under realistic scenarios where different batches differ in many aspects including samples used, single cell capture technology employed, or library preparation approach adopted.
+Batch effect correction has been recognized to be indispensable when integrating scRNA-seq data from multiple batches. Here, we propose SMNN for batch effect correction of scRNA-seq data via supervised mutual nearest neighbor detection. Specifically, SMNN either takes cluster/cell-type label information as input or infers cell types using scRNA-seq clustering, and it then detects mutual nearest neighbors within matched cell types and corrects batch effect accordingly. 
+
+According to the benchmarking results, SMNN provides improved merging within the corresponding cell types across batches, and retains more cell type specific features after correction, especially under realistic scenarios where different batches differ in many aspects including samples used, single cell capture technology employed, or library preparation approach adopted.
 
 SMNN is maintained by Yuchen Yang [yyuchen@email.unc.edu] and Gang Li [franklee@live.unc.edu].
 
