@@ -109,3 +109,6 @@ corrected.results$corrected[[2]][1:10,1:10]
 ## Output (2): mutual nearest neighbor information
 corrected.results$pairs[[2]]
 ```
+
+## Citation
+Yang, Y., Li, G., Qian, H., Wilhelmsen, K., Shen, Y., Li., Y. SMNN: Batch Effect Correction for Single-cell RNA-seq data via Supervised Mutual Nearest Neighbor Detection. *bioRxiv*, doi: https://doi.org/10.1101/672261.
