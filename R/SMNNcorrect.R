@@ -10,6 +10,7 @@
 #' @param batches is a list of two or more expression matrices each corresponding to one batch, where each row corresponds to a gene, and each colname correspond to a cell. 
 #' The number and order of rows should be identical across all maxtices (i.e., all batches should have the exact same gene set and in the same order).
 #' @param batch.cluster.labels is a list of vectors specifying the cluster labels of each cell from each batch. Cells not belonging to any clusters should be set to 0.
+#' SMNN performs correction without any prior knowledge on cell clusters if {batch.cluster.labels = NULL}.
 #' @param num.defined.clusters specifies the number of clusters matched between two or more batches. Default is 1.
 #' @param correct.others is a Boolean variable that defines whether to search nearest neighbors among the cells not belonging to any clusters. Default is FALSE, that is, cells not belonging to any clusters will not be considered as candidate nearest neighbors. 
 #' @param k defines the maximum number of nearest neighbors to be identified. Default is 20.
