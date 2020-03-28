@@ -10,7 +10,7 @@
 #' @param batches is a list of two or more expression matrices each corresponding to one batch, where each row corresponds to a gene, and each colname correspond to a cell. 
 #' The number and order of rows should be identical across all maxtices (i.e., all batches should have the exact same gene set and in the same order).
 #' @param batch.cluster.labels is a list of vectors specifying the cluster labels of each cell from each batch. Cells not belonging to any clusters should be set to 0.
-#' SMNN performs correction without any prior knowledge on cell clusters if {batch.cluster.labels = NULL}.
+#' SMNN performs batch effect correction without any prior knowledge on cell clusters if {batch.cluster.labels = NULL}.
 #' @param num.defined.clusters specifies the number of clusters matched between two or more batches. Default is 1.
 #' @param correct.others is a Boolean variable that defines whether to search nearest neighbors among the cells not belonging to any clusters. Default is FALSE, that is, cells not belonging to any clusters will not be considered as candidate nearest neighbors. 
 #' @param k defines the maximum number of nearest neighbors to be identified. Default is 20.
@@ -20,8 +20,9 @@
 #' @param cos.norm.out is a boolean variable that defines whether to do cosine normalization on output data before computing corrected expression results.
 #' Default is "TRUE".
 #' @param var.adj is a Boolean variable that indicates whether to do variance adjustment on the correction vectors. Default is "TRUE".
-#' @param subset.row NULL, 
-#' @param order is an vector defining the reference batch and the order of the other batches to be corrected.
+#' @param subset.row is a vector specifying the gene set that is used for batch effect correction.
+#' Default is {subset.row = NULL}. 
+#' @param order is a vector defining the reference batch and the order of the other batches to be corrected.
 #' @param n.jobs specifies the number of parallel jobs. It would be set to the number of cores when \code{n.jobs = NULL}.
 #' @return SMNNcorrect returns the following:
 #'     \item corrected expression matrix for each batch
@@ -102,7 +103,7 @@ SMNNcorrect <- function(batches, batch.cluster.labels, num.defined.clusters=1, c
     mnn.list[[ref]] <- DataFrame(current.cell=integer(0), other.cell=integer(0), other.batch=integer(0))
     original.batch <- rep(ref, nrow(ref.batch.in)) 
 
-    # Looping through the batches.
+    # Looping through all the other batches.
     for (b in 2:nbatches) { 
         target <- order[b]
         other.batch.in <- in.batches[[target]]
@@ -110,56 +111,86 @@ SMNNcorrect <- function(batches, batch.cluster.labels, num.defined.clusters=1, c
             other.batch.out <- out.batches[[target]]
         }
         
-        # Supervised finding pairs of mutual nearest neighbours.
-        s1_supervised <- integer()
-        s2_supervised <- integer()
+        if(!is.null(batch.cluster.labels)){
+          # Supervised finding pairs of mutual nearest neighbours.
+          s1_supervised <- integer()
+          s2_supervised <- integer()
         
-        for(c in 1:num.defined.clusters){
-          sets1 <- NULL          
-          ref.batch.rank <- which(batch.cluster.labels[[1]] == c)
-          other.batch.rank <- which(batch.cluster.labels[[target]] == c)
+          for(c in 1:num.defined.clusters){
+            sets1 <- NULL          
+            ref.batch.rank <- which(batch.cluster.labels[[1]] == c)
+            other.batch.rank <- which(batch.cluster.labels[[target]] == c)
 
-          ### MNNs for each subset. The index is python format (starting from 0 ..)
-          print(paste0("Finding the mutual nearest neighbors for cell type ", c, " ..."))
-          sets1 <- mnnpy$utils$find_mutual_nn(data1=ref.batch.in[which(batch.cluster.labels[[1]] == c),], data2=other.batch.in[which(batch.cluster.labels[[target]] == c),], k1=k, k2=k, n_jobs=n.jobs)
+            ### MNNs for each subset. The index is python format (starting from 0 ..)
+            print(paste0("Finding the mutual nearest neighbors for cell type ", c, " ..."))
+            sets1 <- mnnpy$utils$find_mutual_nn(data1=ref.batch.in[which(batch.cluster.labels[[1]] == c),], data2=other.batch.in[which(batch.cluster.labels[[target]] == c),], k1=k, k2=k, n_jobs=n.jobs)
           
-          s1.trace_back <- integer()
-          for(i in 1:length(unlist(sets1[[1]]))){
-            s1.trace_back <- c(s1.trace_back, ref.batch.rank[unlist(sets1[[1]])[i]+1])
-          }
-          s1_supervised <- c(s1_supervised, s1.trace_back)
+            s1.trace_back <- integer()
+            for(i in 1:length(unlist(sets1[[1]]))){
+              s1.trace_back <- c(s1.trace_back, ref.batch.rank[unlist(sets1[[1]])[i]+1])
+            }
+            s1_supervised <- c(s1_supervised, s1.trace_back)
           
-          s2.trace_back <- integer()
-          for(j in 1:length(unlist(sets1[[2]]))){
-            s2.trace_back <- c(s2.trace_back, other.batch.rank[unlist(sets1[[2]])[j]+1])
+            s2.trace_back <- integer()
+            for(j in 1:length(unlist(sets1[[2]]))){
+              s2.trace_back <- c(s2.trace_back, other.batch.rank[unlist(sets1[[2]])[j]+1])
+            }
+            s2_supervised <- c(s2_supervised, s2.trace_back)
           }
-          s2_supervised <- c(s2_supervised, s2.trace_back)
-        }
         
-        if(correct.others == TRUE){
-          sets1 <- NULL
+          if(correct.others == TRUE){
+            sets1 <- NULL
           
-          ref.batch.rank <- which(batch.cluster.labels[[1]] == 0)
-          other.batch.rank <- which(batch.cluster.labels[[target]] == 0)
-          sets1 <- mnnpy$utils$find_mutual_nn(data1=ref.batch.in[which(batch.cluster.labels[[1]] == 0),], data2=other.batch.in[which(batch.cluster.labels[[target]] == 0),], k1=k, k2=k, n_jobs=n.jobs)
+            ref.batch.rank <- which(batch.cluster.labels[[1]] == 0)
+            other.batch.rank <- which(batch.cluster.labels[[target]] == 0)
+            sets1 <- mnnpy$utils$find_mutual_nn(data1=ref.batch.in[which(batch.cluster.labels[[1]] == 0),], data2=other.batch.in[which(batch.cluster.labels[[target]] == 0),], k1=k, k2=k, n_jobs=n.jobs)
   
-          s1.trace_back <- integer()
-          for(i in 1:length(unlist(sets1[[1]]))){
-            s1.trace_back <- c(s1.trace_back, ref.batch.rank[unlist(sets1[[1]])[i] + 1])
-          }
-          s1_supervised <- c(s1_supervised, s1.trace_back)
+            s1.trace_back <- integer()
+            for(i in 1:length(unlist(sets1[[1]]))){
+              s1.trace_back <- c(s1.trace_back, ref.batch.rank[unlist(sets1[[1]])[i] + 1])
+            }
+            s1_supervised <- c(s1_supervised, s1.trace_back)
           
-          s2.trace_back <- integer()
-          for(j in 1:length(sets1[[2]])){
-            s2.trace_back <- c(s2.trace_back, other.batch.rank[unlist(sets1[[2]])[j] + 1])
+            s2.trace_back <- integer()
+            for(j in 1:length(sets1[[2]])){
+              s2.trace_back <- c(s2.trace_back, other.batch.rank[unlist(sets1[[2]])[j] + 1])
+            }
+            s2_supervised <- c(s2_supervised, s2.trace_back)
           }
-          s2_supervised <- c(s2_supervised, s2.trace_back)
-        }
         
-        # Change index from R format (starting from 1 ..) to python format (starting from 0 ..)
-        s1 <- as.integer(s1_supervised)
-        s2 <- as.integer(s2_supervised)
-        sets_supervised <- list(first = s1, second = s2)
+          # Change index from R format (starting from 1 ..) to python format (starting from 0 ..)
+          s1 <- as.integer(s1_supervised)
+          s2 <- as.integer(s2_supervised)
+          sets_supervised <- list(first = s1, second = s2)
+        } 
+        else if(is.null(batch.cluster.labels)){
+          batch.cluster.labels_ref = rep(0, dim(ref.batch.in)[1])
+          batch.cluster.labels_other = rep(0, dim(other.batch.in)[1])
+           
+          # Unsupervised finding pairs of mutual nearest neighbours.
+          s1_unsupervised <- integer()
+          s2_unsupervised <- integer()
+        
+          sets1 <- NULL
+          ref.batch.rank <- which(batch.cluster.labels_ref == 0)
+          other.batch.rank <- which(batch.cluster.labels_other == 0)
+          ### MNNs for each subset. The index is python format (starting from 0 ..)
+          print("Unsupervised searching the mutual nearest neighbors...")
+          sets1 <- mnnpy$utils$find_mutual_nn(data1=ref.batch.in[which(batch.cluster.labels[[1]] == 0),], data2=other.batch.in[which(batch.cluster.labels[[target]] == 0),], k1=k, k2=k, n_jobs=n.jobs)
+          
+          for(i in 1:length(unlist(sets1[[1]]))){
+            s1_unsupervised <- c(s1.trace_back, ref.batch.rank[unlist(sets1[[1]])[i]+1])
+          }
+          
+          for(j in 1:length(unlist(sets1[[2]]))){
+            s2_unsupervised <- c(s2.trace_back, other.batch.rank[unlist(sets1[[2]])[j]+1])
+          }
+        
+          # Change index from R format (starting from 1 ..) to python format (starting from 0 ..)
+          s1 <- as.integer(s1_unsupervised)
+          s2 <- as.integer(s2_unsupervised)
+          sets_unsupervised <- list(first = s1, second = s2)
+        }
 
         # Computing the correction vector
         print("Computing the correction vector ...")
