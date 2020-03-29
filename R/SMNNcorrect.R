@@ -6,7 +6,7 @@
 #' @description This function SMNNcorrect is designed to perform supervised batch effect correction for scRNA-seq data by first identifying nearest neighbors (NNs) within corresponding clusters (or cell types) and then leveraging information from these NNs.
 #' It takes as input raw expression matrices from two or more batches and a list of the unified cluster labels (output from unifiedClusterLabelling).
 #' It outputs batch-corrected expression matrix for each batch.
-#' @usage SMNNcorrect(batches, batch.cluster.labels, num.defined.clusters=1, correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.row=NULL, order=NULL, n.jobs=NULL)
+#' @usage SMNNcorrect(batches, batch.cluster.labels, num.defined.clusters=1, correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.genes=NULL, order=NULL, n.jobs=NULL)
 #' @param batches is a list of two or more expression matrices each corresponding to one batch, where each row corresponds to a gene, and each colname correspond to a cell. 
 #' The number and order of rows should be identical across all maxtices (i.e., all batches should have the exact same gene set and in the same order).
 #' @param batch.cluster.labels is a list of vectors specifying the cluster labels of each cell from each batch. Cells not belonging to any clusters should be set to 0.
@@ -21,7 +21,7 @@
 #' Default is "TRUE".
 #' @param var.adj is a Boolean variable that indicates whether to do variance adjustment on the correction vectors. Default is "TRUE".
 #' @param subset.genes is a vector specifying the gene set that is used for batch effect correction.
-#' Default is {subset.row = NULL}. 
+#' Default is {subset.genes = NULL}. 
 #' @param order is a vector defining the reference batch and the order of the other batches to be corrected.
 #' @param n.jobs specifies the number of parallel jobs. It would be set to the number of cores when \code{n.jobs = NULL}.
 #' @return SMNNcorrect returns the following:
@@ -50,7 +50,7 @@
 #' @import reticulate
 #' @importFrom S4Vectors DataFrame Rle
 #' @export
-SMNNcorrect <- function(batches, batch.cluster.labels, num.defined.clusters=1, correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.row=NULL, order=NULL, n.jobs=NULL){
+SMNNcorrect <- function(batches, batch.cluster.labels, num.defined.clusters=1, correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.genes=NULL, order=NULL, n.jobs=NULL){
     #batches <- list(...) 
     nbatches <- length(batches) 
     if (nbatches < 2L) { 
@@ -78,7 +78,7 @@ SMNNcorrect <- function(batches, batch.cluster.labels, num.defined.clusters=1, c
     prep.out <- mnnpy$utils$transform_input_data(datas=batches.t, cos_norm_in=cos.norm.in, cos_norm_out=cos.norm.out, var_index=as.character(c(0:ncol(batches.t[[1]]))), var_subset=subset.genes, n_jobs=n.jobs)
     in.batches <- prep.out[[1]]
     out.batches <- prep.out[[2]]
-    subset.row <- prep.out[[3]]
+    subset.genes <- prep.out[[3]]
     same.set <- prep.out[[4]]
 
     # Setting up the order.
