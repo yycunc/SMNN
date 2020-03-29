@@ -178,7 +178,7 @@ SMNNcorrect <- function(batches, batch.cluster.labels, num.defined.clusters=1, c
           other.batch.rank <- which(batch.cluster.labels_other == 0)
           ### MNNs for each subset. The index is python format (starting from 0 ..)
           print("Unsupervised searching the mutual nearest neighbors...")
-          sets1 <- mnnpy$utils$find_mutual_nn(data1=ref.batch.in[which(batch.cluster.labels[[1]] == 0),], data2=other.batch.in[which(batch.cluster.labels[[target]] == 0),], k1=k, k2=k, n_jobs=n.jobs)
+          sets1 <- mnnpy$utils$find_mutual_nn(data1=ref.batch.in[which(batch.cluster.labels_ref == 0),], data2=other.batch.in[which(batch.cluster.labels_other == 0),], k1=k, k2=k, n_jobs=n.jobs)
           
           for(i in 1:length(unlist(sets1[[1]]))){
             s1_unsupervised <- c(s1.trace_back, ref.batch.rank[unlist(sets1[[1]])[i]+1])
