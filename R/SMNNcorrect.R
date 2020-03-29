@@ -57,9 +57,11 @@ SMNNcorrect <- function(batches, batch.cluster.labels, num.defined.clusters=1, c
         stop("at least two batches must be specified") 
     }
 
-    ncluster.labels <- length(batch.cluster.labels)
-    if (ncluster.labels != nbatches) { 
-        stop("The number of cluster labels specified must be equal to the number of batches") 
+    if(!is.null(batch.cluster.labels)){
+        ncluster.labels <- length(batch.cluster.labels)
+        if(ncluster.labels != nbatches) { 
+           stop("The number of cluster labels specified must be equal to the number of batches") 
+        }
     }
     
     batches.t <- list()
