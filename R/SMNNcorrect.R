@@ -20,8 +20,8 @@
 #' @param cos.norm.out is a boolean variable that defines whether to do cosine normalization on output data before computing corrected expression results.
 #' Default is "TRUE".
 #' @param var.adj is a Boolean variable that indicates whether to do variance adjustment on the correction vectors. Default is "TRUE".
-#' @param subset.genes is a vector specifying the gene set that is used for batch effect correction.
-#' Default is {subset.genes = NULL}. 
+#' @param subset.genes is a vector specifying the gene set that is used for computing correction vectors.
+#' Default is {subset.genes = NULL}, which means to use all the genes to compute conrrection vectors. 
 #' @param order is a vector defining the reference batch and the order of the other batches to be corrected.
 #' @param n.jobs specifies the number of parallel jobs. It would be set to the number of cores when \code{n.jobs = NULL}.
 #' @return SMNNcorrect returns the following:
@@ -73,9 +73,18 @@ SMNNcorrect <- function(batches, batch.cluster.labels, num.defined.clusters=1, c
        multiprocessing = import("multiprocessing")
        n.jobs <- multiprocessing$cpu_count()
     }
+    
+    subset.index <- match(subset.genes, rownames(batches[[1]]), nomatch = 0L)
+    subset.index <- subset.index[subset.index != 0]
+    if (length(subset.index) == 0){
+       stop("At least one of the genes selected for correction vectors should exist in the input matrix")
+    } else{
+       subset.index <- as.character(subset.index - 1)
+    }
+    
     mnnpy <- import("mnnpy")
     print("Data preparation ...")
-    prep.out <- mnnpy$utils$transform_input_data(datas=batches.t, cos_norm_in=cos.norm.in, cos_norm_out=cos.norm.out, var_index=as.character(c(0:ncol(batches.t[[1]]))), var_subset=subset.genes, n_jobs=n.jobs)
+    prep.out <- mnnpy$utils$transform_input_data(datas=batches.t, cos_norm_in=cos.norm.in, cos_norm_out=cos.norm.out, var_index=as.character(c(0:ncol(batches.t[[1]]))), var_subset=subset.index, n_jobs=n.jobs)
     in.batches <- prep.out[[1]]
     out.batches <- prep.out[[2]]
     subset.genes <- prep.out[[3]]
