@@ -6,12 +6,12 @@
 #' @description This function SMNNcorrect is designed to perform supervised batch effect correction for scRNA-seq data by first identifying nearest neighbors (NNs) within corresponding clusters (or cell types) and then leveraging information from these NNs.
 #' It takes as input raw expression matrices from two or more batches and a list of the unified cluster labels (output from unifiedClusterLabelling).
 #' It outputs batch-corrected expression matrix for each batch.
-#' @usage SMNNcorrect(batches, batch.cluster.labels, num.defined.clusters=1, correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.genes=NULL, order=NULL, n.jobs=NULL)
+#' @usage SMNNcorrect(batches, batch.cluster.labels, matched.labels=c(1,2,3), correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.genes=NULL, order=NULL, n.jobs=NULL)
 #' @param batches is a list of two or more expression matrices each corresponding to one batch, where each row corresponds to a gene, and each colname correspond to a cell. 
 #' The number and order of rows should be identical across all maxtices (i.e., all batches should have the exact same gene set and in the same order).
 #' @param batch.cluster.labels is a list of vectors specifying the cluster labels of each cell from each batch. Cells not belonging to any clusters should be set to 0.
 #' SMNN performs batch effect correction without any prior knowledge on cell clusters if {batch.cluster.labels = NULL}.
-#' @param num.defined.clusters specifies the number of clusters matched between two or more batches. Default is 1.
+#' @param matched.clusters specifies the cell clusters matched between two or more batches.
 #' @param correct.others is a Boolean variable that defines whether to search nearest neighbors among the cells not belonging to any clusters. Default is FALSE, that is, cells not belonging to any clusters will not be considered as candidate nearest neighbors. 
 #' @param k defines the maximum number of nearest neighbors to be identified. Default is 20.
 #' @param sigma defines the bandwidth of the Gaussian smoothing kernel used to compute the correction vector for each cell. Default is 1.
@@ -46,11 +46,11 @@
 #' use_python("/nas/longleaf/apps/python/3.5.1/bin/python3")
 #'
 #' # Perform batch effect correction using SMNNcorrect
-#' corrected.results <- SMNNcorrect(batches = list(data_SMNN$batch1.mat, data_SMNN$batch2.mat), batch.cluster.labels = matched_clusters, num.defined.clusters = 3, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE)
+#' corrected.results <- SMNNcorrect(batches = list(data_SMNN$batch1.mat, data_SMNN$batch2.mat), batch.cluster.labels = matched_clusters, matched.clusters = c(1,2,3), k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE)
 #' @import reticulate
 #' @importFrom S4Vectors DataFrame Rle
 #' @export
-SMNNcorrect <- function(batches, batch.cluster.labels, num.defined.clusters=1, correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.genes=NULL, order=NULL, n.jobs=NULL){
+SMNNcorrect <- function(batches, batch.cluster.labels, matched.clusters, correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.genes=NULL, order=NULL, n.jobs=NULL){
     #batches <- list(...) 
     nbatches <- length(batches) 
     if (nbatches < 2L) { 
@@ -127,7 +127,7 @@ SMNNcorrect <- function(batches, batch.cluster.labels, num.defined.clusters=1, c
           s1_supervised <- integer()
           s2_supervised <- integer()
         
-          for(c in 1:num.defined.clusters){
+          for(c in matched.clusters){
             sets1 <- NULL          
             ref.batch.rank <- which(batch.cluster.labels[[1]] == c)
             other.batch.rank <- which(batch.cluster.labels[[target]] == c)
