@@ -119,4 +119,7 @@ corrected.results$pairs[[2]]
 ```
 
 ## Citation
-Yang, Y., Li, G., Qian, H., Wilhelmsen, K., Shen, Y., Li., Y. SMNN: Batch Effect Correction for Single-cell RNA-seq data via Supervised Mutual Nearest Neighbor Detection. *bioRxiv*, doi: https://doi.org/10.1101/672261.
+Yang, Y., Li, G., Qian, H., Wilhelmsen, K., Shen, Y., Li., Y. (2020) SMNN: Batch Effect Correction for Single-cell RNA-seq data via Supervised Mutual Nearest Neighbor Detection. *Briefings in Bioinformatics*, Accepted. doi: https://doi.org/10.1101/672261.
+
+## Credits
+Some functions are borrowed from or executed according to the orginal scran/MNN package (Haghverdi *et al.*, 2018) and chriscainx/mnnpy (https://github.com/chriscainx/mnnpy).
