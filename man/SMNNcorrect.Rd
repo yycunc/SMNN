@@ -9,16 +9,17 @@ It takes as input raw expression matrices from two or more batches and a list of
 It outputs batch-corrected expression matrix for each batch.
 }
 \usage{
-SMNNcorrect(batches, batch.cluster.labels, num.defined.clusters=1, correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.row=NULL, order=NULL, n.jobs=NULL)
+SMNNcorrect(batches, batch.cluster.labels, matched.labels=c(1,2,3), correct.others=FALSE, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE, var.adj=TRUE, subset.row=NULL, order=NULL, n.jobs=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{batches}{is a list of two or more expression matrices each corresponding to one batch, where each row corresponds to a gene, and each colname correspond to a cell. 
 The number and order of rows should be identical across all maxtices (i.e., all batches should have the exact same gene set and in the same order).}
 
-  \item{batch.cluster.labels}{is a list of vectors specifying the cluster labels of each cell from each batch. Cells not belonging to any clusters should be set to 0.}
+  \item{batch.cluster.labels}{is a list of vectors specifying the cluster labels of each cell from each batch. Cells not belonging to any clusters should be set to 0.
+                              SMNN performs batch effect correction without any prior knowledge on cell cluster if {batch.cluster.labels = NULL}.}
 
-  \item{num.defined.clusters}{specifies the number of clusters matched between two or more batches. Default is 1.}
+  \item{matched.clusters}{specifies the cell clusters matched between two or more batches.}
 
   \item{correct.others}{is a Boolean variable that defines whether to search nearest neighbors among the cells not belonging to any clusters. Default is FALSE, that is, cells not belonging to any clusters will not be considered as candidate nearest neighbors.}
 
@@ -27,14 +28,15 @@ The number and order of rows should be identical across all maxtices (i.e., all 
   \item{sigma}{defines the bandwidth of the Gaussian smoothing kernel used to compute the correction vector for each cell. Default is 1.}
 
   \item{cos.norm.in}{is a boolean variable that defines whether to do cosine normalization on input data before computing distances between cells.
-Default is "TRUE".}
+                     Default is "TRUE".}
 
   \item{cos.norm.out}{is a boolean variable that defines whether to do cosine normalization on output data before computing corrected expression results.
-Default is "TRUE".}
+                      Default is "TRUE".}
 
   \item{var.adj}{is a Boolean variable that indicates whether to do variance adjustment on the correction vectors. Default is "TRUE".}
 
-  \item{subset.row}{NULL,}
+  \item{subset.genes}{is a vector specifying the gene set that is used for computing correction vectors.
+                      Default is {subset.genes = NULL}, which means to use all the genes to compute correction vectors.}
 
   \item{order}{is an vector defining the reference batch and the order of the other batches to be corrected.}
 
@@ -72,7 +74,7 @@ library(reticulate)
 use_python("/nas/longleaf/apps/python/3.5.1/bin/python3")
 
 # Perform batch effect correction using SMNNcorrect
-corrected.results <- SMNNcorrect(batches = list(data_SMNN$batch1.mat, data_SMNN$batch2.mat), batch.cluster.labels = matched_clusters, num.defined.clusters = 3, k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE)
+corrected.results <- SMNNcorrect(batches = list(batches = list(data_SMNN$batch1.mat, data_SMNN$batch2.mat), batch.cluster.labels = matched_clusters, matched.clusters = c(1,2,3), k=20, sigma=1, cos.norm.in=TRUE, cos.norm.out=TRUE)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
