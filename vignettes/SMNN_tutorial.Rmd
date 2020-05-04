@@ -104,4 +104,7 @@ corrected.results$corrected[[2]][1:10,1:10]
 corrected.results$pairs[[2]]
 ```
 
+# Credits
+Some functions are borrowed from or executed according to the orginal *scran/MNN* package (Haghverdi et al., 2018) and *chriscainx/mnnpy* (https://github.com/chriscainx/mnnpy).
+
 ***
