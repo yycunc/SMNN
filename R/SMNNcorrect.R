@@ -21,7 +21,7 @@
 #' Default is "TRUE".
 #' @param var.adj is a Boolean variable that indicates whether to do variance adjustment on the correction vectors. Default is "TRUE".
 #' @param subset.genes is a vector specifying the gene set that is used for computing correction vectors.
-#' Default is {subset.genes = NULL}, which means to use all the genes to compute conrrection vectors. 
+#' Default is {subset.genes = NULL}, which means to use all the genes to compute correction vectors. 
 #' @param order is a vector defining the reference batch and the order of the other batches to be corrected.
 #' @param n.jobs specifies the number of parallel jobs. It would be set to the number of cores when \code{n.jobs = NULL}.
 #' @return SMNNcorrect returns the following:
