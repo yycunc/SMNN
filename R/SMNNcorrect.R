@@ -74,12 +74,14 @@ SMNNcorrect <- function(batches, batch.cluster.labels, matched.clusters, correct
        n.jobs <- multiprocessing$cpu_count()
     }
     
-    subset.index <- match(subset.genes, rownames(batches[[1]]), nomatch = 0L)
-    subset.index <- subset.index[subset.index != 0]
-    if (length(subset.index) == 0){
-       stop("At least one of the genes selected for correction vectors should exist in the input matrix")
-    } else{
-       subset.index <- as.character(subset.index - 1)
+    if (!is.null(subset.genes)){
+       subset.index <- match(subset.genes, rownames(batches[[1]]), nomatch = 0L)
+       subset.index <- subset.index[subset.index != 0]
+       if (length(subset.index) == 0){
+          stop("At least one of the genes selected for correction vectors should exist in the input matrix")
+       } else{
+          subset.index <- as.character(subset.index - 1)
+       }
     }
     
     mnnpy <- import("mnnpy")
