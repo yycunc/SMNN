@@ -1,6 +1,6 @@
 Package: SMNN
 Title: SMNN: Batch Effect Correction for Single-cell RNA-seq data with Supervised Mutual Nearest Neighbor Detection
-Version: 1.1.0
+Version: 1.2.0
 Author: c(person("Yuchen", "Yang", email = "yyuchen@email.unc.edu", role = c("aut", "cre")),
              person("Gang", "Li", email = "", role = c("aut")),
              person("Huijun", "Qian", email = "", role = c("aut")),
