@@ -59,7 +59,7 @@ dim(data_SMNN$batch2.mat)
 ```
 
 
-## The optional clustering step
+## The optional step for clustering
 ### Provide cell-type specific marker gene information
 
 Two pieces of information are needed:
@@ -81,8 +81,8 @@ The function *unifiedClusterLabelling* is used to match/harmonize the clusters/c
 matched_clusters <- unifiedClusterLabelling(data_SMNN$batch1.mat, data_SMNN$batch2.mat, features.use = markers, cluster.labels = cluster.info, min.perc = 0.3)
 ```
 
-### The batch effect correction step using SMNNcorrect function
-#### Set python version to be compatible with SMNNcorrect implementation
+## Batch effect correction using SMNNcorrect function
+### Set python version to be compatible with SMNNcorrect implementation
 In the *SMNNcorrection* function, we call several python functions from *mnnpy* package at [chriscainx/mnnpy](https://github.com/chriscainx/mnnpy) to speed up the computation.
 
 Package *mnnpy* can be installed with pip install mnnpy,
@@ -102,7 +102,7 @@ library(reticulate)
 use_python("/nas/longleaf/apps/python/3.5.1/bin/python3")
 ```
 
-## Perform batch effect correction
+### Batch effect correction
 With harmonized cluster label information for single cells across batches, we perform batch effect correction. Specifically, we apply cosine normalization on both input and output data and set the number of mutual nearest neighbors at 20.
 
 ```{r perform batch effect correction using SMNNcorrect}
