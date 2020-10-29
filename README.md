@@ -23,7 +23,6 @@ March 4, 2020
 May 23, 2019
 * Version 0.99.0 released
   + First offical release
-  + Now it can only work on Mac and Linux platform
 
 
 ## Brief introduction
