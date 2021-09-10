@@ -1,5 +1,8 @@
 SMNNcorrect News
 
+SMNNcorrect 1.2.1 (Release date: 2021-09-10):
+  * Fixing an small error in unifiedClusterLabelling function
+
 SMNNcorrect 1.2.0 (Release date: 2020-08-16):
   * Fixing the issue for using partial genes for correction
 
