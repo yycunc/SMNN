@@ -5,9 +5,13 @@ Batch effect correction has been recognized to be indispensable when integrating
 
 According to the benchmarking results, SMNN provides improved merging within the corresponding cell types across batches, and retains more cell type specific features after correction, especially under realistic scenarios where different batches differ in many aspects including samples used, single cell capture technology employed, or library preparation approach adopted.
 
-SMNN is maintained by Yuchen Yang [yyuchen@email.unc.edu] and Gang Li [franklee@live.unc.edu].
+SMNN is maintained by Yuchen Yang [yangyuchensysu@gmail.com] and Gang Li [franklee@live.unc.edu].
 
 ## News and Updates
+September 10, 2021
+* Version 1.2.1 released
+  + Fixing an small error in *unifiedClusterLabelling* function
+
 Augest 16, 2020
 * Version 1.2.0 released
   + Fixing the issue for using partial genes for correction
