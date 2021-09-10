@@ -165,7 +165,7 @@ unifiedClusterLabelling <- function(..., features.use, cluster.labels, datatype=
             if (sum(group.assigned == cluster.multi_assigned[j]) == 0){
               dist <- 0
             } else {
-              cell.object <- which(ident == i)
+              cell.object <- which(ident == cluster.names_b[i])
               cell.query <- NULL
               for (c in cluster.names_b[which(group.assigned == cluster.multi_assigned[j])]){
                 cell.query <- c(cell.query, which(ident == c))
