@@ -82,7 +82,7 @@ cluster.info <- c(1, 1, 2, 3)
 The function *unifiedClusterLabelling* is used to match/harmonize the clusters/cell type labels across multiple scRNA-seq batches. It takes as input raw expression matrices from two or more batches, a list of marker genes and their corresponding cluster labels, and outputs harmonized cluster label for every single cells across all batches.
 
 ```{r, results='hide', fig.show="hide", message=FALSE}
-matched_clusters <- unifiedClusterLabelling(data_SMNN$batch1.mat, data_SMNN$batch2.mat, features.use = markers, cluster.labels = cluster.info, min.perc = 0.3)
+matched_clusters <- unifiedClusterLabelling(batches = list(data_SMNN$batch1.mat, data_SMNN$batch2.mat), features.use = markers, cluster.labels = cluster.info, min.perc = 0.3)
 ```
 
 ## Batch effect correction using SMNNcorrect function
