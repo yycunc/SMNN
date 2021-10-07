@@ -7,7 +7,7 @@
 #' It takes as input raw expression matrices from two or more batches, a list of marker genes and their corresponding cluster labels.
 #' It outputs cluster corresponding labels for the cells in each batch.
 #' @usage unifiedClusterLabelling(..., features.use, cluster.labels, datatype="count", ident_list=NULL, cluster.use=NULL, cluster.names=NULL, min.exp.thresh=0, min.perc=0.6, min.average.expr=0)
-#' @param ... Two or more expression matrices where each row corresponds to a gene and each column corresponds to a single cell. All matriecs should contain the same number of rows (i.e., all batches should have the exact same gene set and in the same order).
+#' @param batches is a list of two or more expression matrices where each row corresponds to a gene and each column corresponds to a single cell. All matriecs should contain the same number of rows (i.e., all batches should have the exact same gene set and in the same order).
 #' @param features.use is a vector of marker genes used to match clusters across batches.
 #' @param cluster.labels specifies the corresponding cluster label for each marker gene.
 #' @param datatype defines the type of data, which can be "count", "CPM", "RPKM" and "FPKM". Default is "count".
@@ -34,9 +34,8 @@
 #' @import Matrix
 #' @importFrom reshape melt
 #' @export
-unifiedClusterLabelling <- function(..., features.use, cluster.labels, datatype="count", ident_list=NULL, cluster.use=NULL, cluster.names=NULL, min.exp.thresh=0, min.perc=0.6, min.average.expr=0) {
+unifiedClusterLabelling <- function(batches, features.use, cluster.labels, datatype="count", ident_list=NULL, cluster.use=NULL, cluster.names=NULL, min.exp.thresh=0, min.perc=0.6, min.average.expr=0) {
   group.used_all <- NULL
-  batches <- list(...) 
   nbatches <- length(batches)
   if (nbatches < 2L) { 
     stop("at least two batches must be specified") 
